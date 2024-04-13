@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Previsão do Tempo</title>
+</head>
+
+<body>
+    <div class="caixa-maior">
+
+        <input class="input-cidade" placeholder="Digite o nome da cidade">
+        <button onclick="buscarClima()"><img class="lupa" src="https://www.svgrepo.com/show/390590/find-glass-minus-online-search-seo.svg"></button>
+
+        <div class="caixa-media" style="display: none;">
+            <h2 class="cidade"></h2>
+            <p class="temp"></p>
+            <img class="icone">
+            <p class="umidade"></p>
+        </div>
+    </div>
+
+    <script>
+        async function buscarClima() {
+            var cidade = document.querySelector('.input-cidade').value;
+            var url = 'https://api.openweathermap.org/data/2.5/weather?q=' + cidade + '&appid=9dfffedd7c000f4449c78e8920f1a0b9&lang=pt_br&units=metric';
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.main && data.weather && data.weather[0]) {
+                    document.querySelector('.caixa-media').style.display = 'block';
+                    document.querySelector('.cidade').textContent = 'Tempo em ' + cidade;
+                    document.querySelector('.temp').textContent = 'Temperatura: ' + data.main.temp + '°C';
+                    document.querySelector('.icone').src = 'https://openweathermap.org/img/wn/' + data.weather[0].icon + '.png';
+                    document.querySelector('.umidade').textContent = 'Umidade: ' + data.main.humidity + '%';
+                } else {
+                    console.log('Dados do clima incompletos:', data);
+                    alert('Não foi possível obter os dados do clima para ' + cidade + '. Por favor, verifique o nome da cidade e tente novamente.');
+                }
+            } catch (error) {
+                console.log('Erro ao obter dados do clima:', error);
+                alert('Erro ao obter os dados do clima para ' + cidade + '. Por favor, tente novamente mais tarde.');
+            }
+        }
+    </script>
+</body>
+
+</html>
